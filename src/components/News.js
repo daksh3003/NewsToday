@@ -14,14 +14,15 @@ export class News extends Component {
     pageSize: PropTypes.number,
     category: PropTypes.string,
   };
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     console.log("hi i am a aconstructor from the news component");
     this.state = {
       articles: [],
       page: 1,
       loading: false,
     };
+    document.title = `NewsToday-${this.props.category}`;
   }
 
   async componentDidMount() {
@@ -88,7 +89,7 @@ export class News extends Component {
   render() {
     return (
       <div className="conatiner my-3">
-        <h1 className="text-center">NewsToday- top headlines.</h1>
+        <h1 className="text-center">{`NewsToday- Top Headlines from ${this.props.category}`}</h1>
         {this.state.loading && <Spinner />}
         <div className="row">
           {this.state.articles.map((element) => {

@@ -8,9 +8,9 @@ export default class App extends Component {
       <div>
         <Router basename="/">
           <Navbar/>
-          <Routes>
 
-          <Route exact path="/" element={
+          <Routes>
+          <Route exact path="/home" element={
               <News
                 key="general"
                 pageSize={6}
