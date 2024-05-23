@@ -21,6 +21,7 @@ export class News extends Component {
       articles: [],
       page: 1,
       loading: false,
+      totalResults:0
     };
     document.title = `NewsToday-${this.props.category}`;
   }
@@ -35,6 +36,7 @@ export class News extends Component {
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
+      totalResults: parsedData.totalResults
     });
   }
   handleNextClick = async () => {
@@ -61,6 +63,7 @@ export class News extends Component {
         page: this.state.page + 1,
         articles: parsedData.articles,
         loading: false,
+        totalResults: parsedData.totalResults
       });
     }
   };
@@ -84,36 +87,45 @@ export class News extends Component {
       page: this.state.page - 1,
       articles: parsedData.articles,
       loading: false,
+      totalResults: parsedData.totalResults
     });
   };
   render() {
     return (
       <div className="conatiner my-3">
         <h1 className="text-center">{`NewsToday- Top Headlines from ${this.props.category}`}</h1>
-        {this.state.loading && <Spinner />}
-        <div className="row">
-          {this.state.articles.map((element) => {
-            return (
-              <div className="col-md-4" key={element.url}>
-                <NewsItem
-                  title={element.title ? element.title.slice(0, 128) : ""}
-                  description={
-                    element.description ? element.description.slice(0, 80) : ""
-                  }
-                  imageUrl={
-                    element.urlToImage
-                      ? element.urlToImage
-                      : "https://cdn.ndtv.com/common/images/ogndtv.png"
-                  }
-                  newsUrl={element.url}
-                  author={element.author ? element.author : "Unknown"}
-                  date={element.publishedAt}
-                  source={element.source.name.slice(0, 18)}
-                />
-              </div>
-            );
-          })}
-        </div>
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length!== this.state.totalResults}
+          loader={<Spinner/>}
+        >
+          <div className="row">
+            {this.state.articles.map((element) => {
+              return (
+                <div className="col-md-4" key={element.url}>
+                  <NewsItem
+                    title={element.title ? element.title.slice(0, 128) : ""}
+                    description={
+                      element.description
+                        ? element.description.slice(0, 80)
+                        : ""
+                    }
+                    imageUrl={
+                      element.urlToImage
+                        ? element.urlToImage
+                        : "https://cdn.ndtv.com/common/images/ogndtv.png"
+                    }
+                    newsUrl={element.url}
+                    author={element.author ? element.author : "Unknown"}
+                    date={element.publishedAt}
+                    source={element.source.name.slice(0, 18)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </InfiniteScroll>
         <div className="container d-flex justify-content-between">
           <button
             disabled={this.state.page <= 1}
